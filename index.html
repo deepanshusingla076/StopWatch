@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    label#time {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: block;
+      color: #fff;
+    }
+
+    button {
+      background-color: #4c9eaf;
+      color: white;
+      padding: 15px 32px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    button:hover {
+      background-color: #2d7c8b;
+      transform: scale(1.05);
+    }
+
+    .start-button {
+      background-color: #4c9eaf;
+    }
+
+    .stop-button {
+      background-color: #f44336;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      font-size: 18px;
+      margin: 5px 0;
+      padding: 5px;
+      background-color: #333;
+      border-radius: 4px;
+      color: white;
+      text-align: left;
+    }
+
+    li:nth-child(even) {
+      background-color: #444;
+    }
+
+    label {
+      font-size: 24px;
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      label#time {
+        font-size: 36px;
+      }
+
+      button {
+        padding: 12px 24px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Stopwatch</h1>
+    <label id="time">0s</label>
+    <div>
+      <button id="startStopButton" class="start-button">Start</button>
+      <button id="lapResetButton">Lap</button>
+    </div>
+    <ul id="lapList"></ul>
+  </div>
+
+  <script>
+    let isRunning = false;
+    let time = 0;
+    let laps = [];
+    let interval;
+
+    const timeLabel = document.getElementById('time');
+    const startStopButton = document.getElementById('startStopButton');
+    const lapResetButton = document.getElementById('lapResetButton');
+    const lapList = document.getElementById('lapList');
+
+    function updateTime() {
+      time++;
+      timeLabel.textContent = time + "s";
+    }
+
+    function handleStartStop() {
+      if (isRunning) {
+        clearInterval(interval);
+        isRunning = false;
+        startStopButton.textContent = "Start";
+        startStopButton.classList.remove('stop-button');
+        startStopButton.classList.add('start-button');
+        lapResetButton.textContent = "Reset";
+      } else {
+        interval = setInterval(updateTime, 1000);
+        isRunning = true;
+        startStopButton.textContent = "Stop";
+        startStopButton.classList.remove('start-button');
+        startStopButton.classList.add('stop-button');
+        lapResetButton.textContent = "Lap";
+      }
+    }
+
+    function handleLapReset() {
+      if (isRunning) {
+        laps.unshift(time);
+        const lapItem = document.createElement('li');
+        lapItem.textContent = time + "s";
+        lapList.prepend(lapItem);
+      } else {
+        time = 0;
+        laps = [];
+        timeLabel.textContent = time + "s";
+        lapList.innerHTML = "";
+      }
+    }
+
+    startStopButton.addEventListener('click', handleStartStop);
+    lapResetButton.addEventListener('click', handleLapReset);
+  </script>
+</body>
+
+</html>
